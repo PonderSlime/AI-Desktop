@@ -79,10 +79,17 @@ class TTSWorker(QThread):
         super().__init__(parent)
         self.text = input
 
+    def get_resource_path(self, relative_path):
+        """Get the absolute path to a resource, works for dev and PyInstaller."""
+        base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+        return os.path.join(base_path, relative_path)
+
     def run(self):
         temp_file_path = None
         try:
-            model = "src/lessac/en_US-lessac-medium.onnx"
+            model = self.get_resource_path("src/lessac/en_US-lessac-medium.onnx")
+            print(f"Looking for ONNX model at: {model}")
+
             voice = PiperVoice.load(model)
 
             # Create an empty AudioSegment to accumulate audio chunks
@@ -109,8 +116,8 @@ class TTSWorker(QThread):
             play(AudioSegment.from_file(temp_file_path))
 
         except Exception as e:
-            self.tts_error.emit(f"TTS Error: {str(e)}")
-
+            #self.tts_error.emit(f"TTS Error: {str(e)}")
+            print(f"TTS Error: {str(e)}")
         finally:
             if temp_file_path and os.path.exists(temp_file_path):
                 os.remove(temp_file_path)
