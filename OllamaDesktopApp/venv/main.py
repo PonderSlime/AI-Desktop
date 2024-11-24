@@ -82,7 +82,7 @@ class TTSWorker(QThread):
     def run(self):
         temp_file_path = None
         try:
-            model = "src/cori/en_GB-cori-medium.onnx"
+            model = "src/lessac/en_US-lessac-medium.onnx"
             voice = PiperVoice.load(model)
 
             # Create an empty AudioSegment to accumulate audio chunks
