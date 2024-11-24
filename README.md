@@ -1,7 +1,8 @@
 # AI-Desktop
 This is a custom AI Client App using Ollama and Piper, to generate and speak text!
 
-Demo link: 
+Demo link (video):
+https://cloud-5x23e0m6z-hack-club-bot.vercel.app/02024-11-24_15-49-45.mp4
 
 To try it for yourself, download the repo. 
 
