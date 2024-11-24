@@ -19,7 +19,7 @@ from PyQt5.QtGui import QColor, QPainter, QPen, QBrush
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QLineEdit,
     QPushButton, QPlainTextEdit, QLabel, QScrollArea, QTabWidget,
-    QHBoxLayout, QMessageBox, QSizePolicy, QFileDialog, QListWidget, QListWidgetItem
+    QHBoxLayout, QMessageBox, QSizePolicy, QFileDialog, QListWidget, QListWidgetItem, QToolButton, QMenu, QAction
 )
 import re
 class WorkerThread(QThread):
@@ -189,18 +189,44 @@ class OllamaApp(QMainWindow):
         self.layout.setSpacing(15)
 
         self.tab_widget = QTabWidget()
+        self.tab_widget.setTabsClosable(True)
+
+        self.tab_widget.tabCloseRequested.connect(self.close_tab)
+
         self.layout.addWidget(self.tab_widget)
 
+        self.dropdown_button = QPushButton("Open Tab")
+
+        self.dropdown_menu = QMenu()
+        action_new_chat = QAction("New Chat", self)
+        action_new_chat.triggered.connect(self.setup_chat_tab)
+        self.dropdown_menu.addAction(action_new_chat)
+        self.dropdown_button.setMenu(self.dropdown_menu)
+
+        action_new_model_editor = QAction("Model Editor", self)
+        action_new_model_editor.triggered.connect(self.setup_model_tab)
+        self.dropdown_menu.addAction(action_new_model_editor)
+
+        toolbar_layout = QHBoxLayout()
+        toolbar_layout.addWidget(self.dropdown_button)
+        toolbar_layout.addStretch()
+
+        self.layout.addLayout(toolbar_layout)
         self.central_widget.setLayout(self.layout)
         self.setCentralWidget(self.central_widget)
 
         self.chat_tabs = {}  # Store chat tab layouts
-        self.setup_tabs()
+        self.setup_chat_tab()
+        self.setup_model_tab()
 
-    def setup_tabs(self):
+    def close_tab(self, index):
+        """Handle tab close button click."""
+        self.tab_widget.removeTab(index)
+    def setup_chat_tab(self):
         # Default Chat Tab
         self.create_chat_tab("llama3.2:1b", "you are a friendly assistant")
 
+    def setup_model_tab(self):
         # Model Editor Tab
         self.model_editor_tab = QWidget()
         self.setup_model_editor_tab()

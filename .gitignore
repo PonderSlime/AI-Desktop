@@ -6,7 +6,8 @@ lib/
 .idea/
 # Files for the ART/Dalvik VM
 *.dex
-
+dist/
+build/
 # Java class files
 *.class
 
